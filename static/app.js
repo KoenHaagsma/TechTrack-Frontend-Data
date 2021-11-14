@@ -24,7 +24,7 @@ function characterDetails(url) {
         .catch((err) => console.log(err));
 }
 
-function getSingleCharacterSecondWay(array, characterName) {
+function getSingleCharacter(array, characterName) {
     let result = [];
     for (let i = 0; i < array.length; i++) {
         if (characterName === `${array[i].name}`) {
@@ -34,5 +34,6 @@ function getSingleCharacterSecondWay(array, characterName) {
     return result;
 }
 
-console.log(await characterDetails(firstGenerationPokeURL));
-console.log(getSingleCharacterSecondWay(await characterDetails(firstGenerationPokeURL), 'pikachu'));
+console.log(getSingleCharacter(await characterDetails(firstGenerationPokeURL), 'pikachu'));
+
+export { characterDetails, getSingleCharacter };

@@ -8,12 +8,22 @@
         <title>Barchart</title>
     </head>
     <body>
-        <h1>Student's First BarChart</h1>
-        <!-- <div>
-            <strong>Filter:</strong>
-            <label><input type="checkbox" name="US" value="1" id="filter-us-only" />US only</label>
-        </div> -->
+        <h1>Pokemon height/weight</h1>
+        <div>
+            <form action="">
+                <strong>Filter:</strong>
+                <label
+                    ><input checked type="radio" name="generation" value="1" id="first-filter" />First Generation</label
+                >
+                <label><input type="radio" name="generation" value="2" id="second-filter" />Second Generation</label>
+                <label><input type="radio" name="generation" value="3" id="third-filter" />Third Generation</label>
+                <strong>|</strong>
+                <label><input checked type="radio" name="value" value="4" id="first-filter-height" />Height</label>
+                <label><input type="radio" name="value" value="5" id="second-filter-weight" />Weight</label>
+            </form>
+        </div>
     </body>
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="index.js"></script>
+    <script type="module" src="index.js"></script>
+    <script type="module" src="app.js"></script>
 </html>

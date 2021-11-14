@@ -1,6 +1,11 @@
-const margin = { top: 40, bottom: 10, left: 120, right: 20 };
-const width = 800 - margin.left - margin.right;
-const height = 600 - margin.top - margin.bottom;
+import { characterDetails, getSingleCharacter } from './app.js';
+const firstGenerationPokeURL = 'https://pokeapi.co/api/v2/pokemon?limit=151';
+const secondGenerationPokeURL = 'https://pokeapi.co/api/v2/pokemon?limit=152&offset=251';
+const thirdGenerationPokeURL = 'https://pokeapi.co/api/v2/pokemon?limit=252&offset=386';
+
+const margin = { top: 80, bottom: 10, left: 120, right: 20 };
+const width = 1000 - margin.left - margin.right;
+const height = 3000 - margin.top - margin.bottom;
 
 // Creates sources <svg> element
 // Adds a <svg> to <body>
@@ -14,11 +19,13 @@ const svg = d3
 const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`); // Setup the margin
 
 // Global variable for all data
-let data; // ??
+let firstGenerationData;
+let secondGenerationData;
+let thirdGenerationData;
 
 // Scales setup
 const xscale = d3.scaleLinear().range([0, width]); // Setup x-axis scale, so the linear scale to the max width 0 > width
-const yscale = d3.scaleBand().rangeRound([0, height]).paddingInner(0.1); // Setup y-axis to the max height 0 > height
+const yscale = d3.scaleBand().rangeRound([0, height]).paddingInner(0.2); // Setup y-axis to the max height 0 > height
 
 // Axis setup
 const xaxis = d3.axisTop().scale(xscale); // Initialize xaxis, set above the x-axis with axisTop
@@ -28,16 +35,16 @@ const g_yaxis = g.append('g').attr('class', 'y axis'); // Append the group to th
 
 /////////////////////////
 
-// Data fetching
-d3.json('https://rawgit.com/sgratzl/d3tutorial/master/examples/weather.json').then((json) => {
-    data = json;
-    update(data); // Run function update
-});
+// Data fetching Source: https://stackoverflow.com/questions/65676115/create-a-d3-bar-chart-using-a-object
+firstGenerationData = await characterDetails(firstGenerationPokeURL);
+secondGenerationData = await characterDetails(secondGenerationPokeURL);
+thirdGenerationData = await characterDetails(thirdGenerationPokeURL);
+update(firstGenerationData);
 
 function update(new_data) {
     //update the scales
-    xscale.domain([0, d3.max(new_data, (d) => d.temperature)]); // Gets the maximum value
-    yscale.domain(new_data.map((d) => d.location.city)); // Gets all locations names
+    xscale.domain([0, d3.max(new_data, (d) => d.height)]); // Gets the maximum value
+    yscale.domain(new_data.map((d) => d.name)); // Gets all pokemon names
     //render the axis
     g_xaxis.transition().call(xaxis); // Render the xaxis after setting new scales
     g_yaxis.transition().call(yaxis); // Render the yaxis after setting new scales
@@ -46,7 +53,7 @@ function update(new_data) {
     // DATA JOIN use the key argument for ensuring that the same DOM element is bound to the same data-item
     const rect = g
         .selectAll('rect') // Select all rect in HTML file
-        .data(new_data, (d) => d.location.city) // set data to every location name
+        .data(new_data, (d) => d.name) // set data to every pokemon name, .data accepts Array, function, Nothing
         .join(
             // Join all these together
             // ENTER
@@ -54,7 +61,7 @@ function update(new_data) {
             (enter) => {
                 // Enter the new data into the elements
                 const rect_enter = enter.append('rect').attr('x', 0); // Append new rect, with x='0'
-                rect_enter.append('title'); // Set title filled with the city name
+                rect_enter.append('title'); // Set title filled with the Pokemon name
                 return rect_enter;
             },
             // UPDATE
@@ -69,25 +76,55 @@ function update(new_data) {
     // both old and new elements
     rect.transition()
         .attr('height', yscale.bandwidth()) // Set height of the bar (rect)
-        .attr('width', (d) => xscale(d.temperature)) // Set width of the bar (rect) this determines the scale
-        .attr('y', (d) => yscale(d.location.city)); // Set y scale per city name/location
+        .attr('width', (d) => xscale(d.height)) // Set width of the bar (rect) this determines the scale
+        .attr('y', (d) => yscale(d.name)); // Set y scale per city name/location
 
-    rect.select('title').text((d) => d.location.city); // Set title per rect.
+    rect.select('title').text((d) => d.name); // Set title per rect.
 }
 
-// //interactivity
-// d3.select('#filter-us-only').on('change', function () {
-//     // This will be triggered when the user selects or unselects the checkbox
-//     const checked = d3.select(this).property('checked');
-//     if (checked === true) {
-//         // Checkbox was just checked
+//interactivity
+d3.select('#first-filter').on('change', function () {
+    // This will be triggered when the user selects or unselects the checkbox
+    const checked = d3.select(this).property('checked');
+    if (checked === true) {
+        // Checkbox was just checked
+        // Use data that is from the Second generation Pokemon.
+        const filtered_data = firstGenerationData;
 
-//         // Keep only data element whose country is US
-//         const filtered_data = data.filter((d) => d.location.country === 'US');
+        update(filtered_data); // Update the chart with the filtered data
+    } else {
+        // Checkbox was just unchecked
+        update(firstGenerationData); // Update the chart with all the data we have
+    }
+});
 
-//         update(filtered_data); // Update the chart with the filtered data
-//     } else {
-//         // Checkbox was just unchecked
-//         update(data); // Update the chart with all the data we have
-//     }
-// });
+d3.select('#second-filter').on('change', function () {
+    // This will be triggered when the user selects or unselects the checkbox
+    const checked = d3.select(this).property('checked');
+    if (checked === true) {
+        // Checkbox was just checked
+        // Use data that is from the Second generation Pokemon.
+        const filtered_data = secondGenerationData;
+
+        update(filtered_data); // Update the chart with the filtered data
+    } else {
+        // Checkbox was just unchecked
+        update(firstGenerationData); // Update the chart with all the data we have
+    }
+});
+
+//interactivity
+d3.select('#third-filter').on('change', function () {
+    // This will be triggered when the user selects or unselects the checkbox
+    const checked = d3.select(this).property('checked');
+    if (checked === true) {
+        // Checkbox was just checked
+        // Use data that is from the Second generation Pokemon.
+        const filtered_data = thirdGenerationData;
+
+        update(filtered_data); // Update the chart with the filtered data
+    } else {
+        // Checkbox was just unchecked
+        update(firstGenerationData); // Update the chart with all the data we have
+    }
+});

@@ -1,5 +1,3 @@
-import fetch, { FetchError } from 'node-fetch';
-
 // https://www.javascripttutorial.net/javascript-fetch-api/
 async function fetchData(url) {
     try {
