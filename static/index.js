@@ -5,7 +5,7 @@ const thirdGenerationPokeURL = 'https://pokeapi.co/api/v2/pokemon?limit=252&offs
 
 const margin = { top: 80, bottom: 10, left: 120, right: 20 };
 const width = 1000 - margin.left - margin.right;
-const height = 3000 - margin.top - margin.bottom;
+const height = 4000 - margin.top - margin.bottom;
 
 // Creates sources <svg> element
 // Adds a <svg> to <body>
@@ -25,7 +25,7 @@ let thirdGenerationData;
 
 // Scales setup
 const xscale = d3.scaleLinear().range([0, width]); // Setup x-axis scale, so the linear scale to the max width 0 > width
-const yscale = d3.scaleBand().rangeRound([0, height]).paddingInner(0.2); // Setup y-axis to the max height 0 > height
+const yscale = d3.scaleBand().rangeRound([0, height]).paddingInner(0.4); // Setup y-axis to the max height 0 > height
 
 // Axis setup
 const xaxis = d3.axisTop().scale(xscale); // Initialize xaxis, set above the x-axis with axisTop
@@ -53,7 +53,7 @@ function update(new_data) {
     // DATA JOIN use the key argument for ensuring that the same DOM element is bound to the same data-item
     const rect = g
         .selectAll('rect') // Select all rect in HTML file
-        .data(new_data, (d) => d.name) // set data to every pokemon name, .data accepts Array, function, Nothing
+        .data(new_data, (d) => d.name) // set data to every pokemon name, .data accepts array, function, nothing
         .join(
             // Join all these together
             // ENTER
@@ -81,6 +81,8 @@ function update(new_data) {
 
     rect.select('title').text((d) => d.name); // Set title per rect.
 }
+
+// Add tooltip on mouseover: https://chartio.com/resources/tutorials/how-to-show-data-on-mouseover-in-d3js/#creating-a-tooltip-using-mouseover-events
 
 //interactivity
 d3.select('#first-filter').on('change', function () {
