@@ -82,7 +82,6 @@ function update(new_data, element) {
 
     // ENTER + UPDATE
     // both old and new elements
-
     if (element === 'height') {
         rect.transition()
             .attr('height', yscale.bandwidth()) // Set height of the bar (rect)
@@ -100,10 +99,9 @@ function update(new_data, element) {
 }
 
 // Add tooltip on mouseover: https://chartio.com/resources/tutorials/how-to-show-data-on-mouseover-in-d3js/#creating-a-tooltip-using-mouseover-events
-
 // TODO: Add tooltip on mouseover
 
-//interactivity
+// Interactivity
 function addInteractivity(ID, generationData, element) {
     d3.select(`#${ID}`).on('change', function () {
         // This will be triggered when the user selects or unselects the checkbox
@@ -121,11 +119,12 @@ function addInteractivity(ID, generationData, element) {
     });
 }
 
-//Interactivity
+// Setup on load
 addInteractivity('first-filter', firstGenerationData, heightButton.value); // first generation data height
 addInteractivity('second-filter', secondGenerationData, heightButton.value); // second generation data height
 addInteractivity('third-filter', thirdGenerationData, heightButton.value); // third generation data height
 
+// Change update based on selected button (Height)
 d3.select('#first-filter-height').on('change', function () {
     title.innerHTML = 'Pokemon height';
     addInteractivity('first-filter', firstGenerationData, heightButton.value);
@@ -133,6 +132,7 @@ d3.select('#first-filter-height').on('change', function () {
     addInteractivity('third-filter', thirdGenerationData, heightButton.value);
 });
 
+// Change update based on selected button (Weight)
 d3.select('#second-filter-weight').on('change', function () {
     title.innerHTML = 'Pokemon weight';
     addInteractivity('first-filter', firstGenerationData, weightButton.value);
