@@ -7,6 +7,10 @@ const margin = { top: 80, bottom: 10, left: 120, right: 20 };
 const width = 1000 - margin.left - margin.right;
 const height = 4000 - margin.top - margin.bottom;
 
+const heightButton = document.getElementById('first-filter-height');
+const weightButton = document.getElementById('second-filter-weight');
+const title = document.querySelector('h1');
+
 // Creates sources <svg> element
 // Adds a <svg> to <body>
 const svg = d3
@@ -39,11 +43,15 @@ const g_yaxis = g.append('g').attr('class', 'y axis'); // Append the group to th
 firstGenerationData = await characterDetails(firstGenerationPokeURL);
 secondGenerationData = await characterDetails(secondGenerationPokeURL);
 thirdGenerationData = await characterDetails(thirdGenerationPokeURL);
-update(firstGenerationData);
+update(firstGenerationData, 'height');
 
-function update(new_data) {
+function update(new_data, element) {
     //update the scales
-    xscale.domain([0, d3.max(new_data, (d) => d.height)]); // Gets the maximum value
+    if (element === 'height') {
+        xscale.domain([0, d3.max(new_data, (d) => d.height)]); // Gets the maximum value
+    } else if (element === 'weight') {
+        xscale.domain([0, d3.max(new_data, (d) => d.weight)]); // Gets the maximum value
+    }
     yscale.domain(new_data.map((d) => d.name)); // Gets all pokemon names
     //render the axis
     g_xaxis.transition().call(xaxis); // Render the xaxis after setting new scales
@@ -74,59 +82,104 @@ function update(new_data) {
 
     // ENTER + UPDATE
     // both old and new elements
-    rect.transition()
-        .attr('height', yscale.bandwidth()) // Set height of the bar (rect)
-        .attr('width', (d) => xscale(d.height)) // Set width of the bar (rect) this determines the scale
-        .attr('y', (d) => yscale(d.name)); // Set y scale per city name/location
 
-    rect.select('title').text((d) => d.name); // Set title per rect.
+    if (element === 'height') {
+        rect.transition()
+            .attr('height', yscale.bandwidth()) // Set height of the bar (rect)
+            .attr('width', (d) => xscale(d.height)) // Set width of the bar (rect) this determines the scale
+            .attr('y', (d) => yscale(d.name)); // Set y scale per city name/location
+
+        rect.select('title').text((d) => d.name); // Set title per rect.
+    } else if (element === 'weight') {
+        rect.transition()
+            .attr('height', yscale.bandwidth()) // Set height of the bar (rect)
+            .attr('width', (d) => xscale(d.weight)) // Set width of the bar (rect) this determines the scale
+            .attr('y', (d) => yscale(d.name)); // Set y scale per city name/location
+        rect.select('title').text((d) => d.name); // Set title per rect.
+    }
 }
 
 // Add tooltip on mouseover: https://chartio.com/resources/tutorials/how-to-show-data-on-mouseover-in-d3js/#creating-a-tooltip-using-mouseover-events
 
 //interactivity
-d3.select('#first-filter').on('change', function () {
-    // This will be triggered when the user selects or unselects the checkbox
-    const checked = d3.select(this).property('checked');
-    if (checked === true) {
-        // Checkbox was just checked
-        // Use data that is from the Second generation Pokemon.
-        const filtered_data = firstGenerationData;
+function addInteractivity(ID, generationData, element) {
+    d3.select(`#${ID}`).on('change', function () {
+        // This will be triggered when the user selects or unselects the checkbox
+        const checked = d3.select(this).property('checked');
+        if (checked === true) {
+            // Checkbox was just checked
+            // Use data that is from the Second generation Pokemon.
+            const filtered_data = generationData;
 
-        update(filtered_data); // Update the chart with the filtered data
-    } else {
-        // Checkbox was just unchecked
-        update(firstGenerationData); // Update the chart with all the data we have
-    }
+            update(filtered_data, element); // Update the chart with the filtered data
+        } else {
+            // Checkbox was just unchecked
+            update(firstGenerationData, 'height'); // Update the chart with all the data we have
+        }
+    });
+}
+
+//Interactivity
+
+d3.select('#first-filter-height').on('change', function () {
+    title.innerHTML = 'Pokemon height';
+    addInteractivity('first-filter', firstGenerationData, heightButton.value);
+    addInteractivity('second-filter', secondGenerationData, heightButton.value);
+    addInteractivity('third-filter', thirdGenerationData, heightButton.value);
 });
 
-d3.select('#second-filter').on('change', function () {
-    // This will be triggered when the user selects or unselects the checkbox
-    const checked = d3.select(this).property('checked');
-    if (checked === true) {
-        // Checkbox was just checked
-        // Use data that is from the Second generation Pokemon.
-        const filtered_data = secondGenerationData;
-
-        update(filtered_data); // Update the chart with the filtered data
-    } else {
-        // Checkbox was just unchecked
-        update(firstGenerationData); // Update the chart with all the data we have
-    }
+d3.select('#second-filter-weight').on('change', function () {
+    title.innerHTML = 'Pokemon weight';
+    addInteractivity('first-filter', firstGenerationData, weightButton.value);
+    addInteractivity('second-filter', secondGenerationData, weightButton.value);
+    addInteractivity('third-filter', thirdGenerationData, weightButton.value);
 });
 
-//interactivity
-d3.select('#third-filter').on('change', function () {
-    // This will be triggered when the user selects or unselects the checkbox
-    const checked = d3.select(this).property('checked');
-    if (checked === true) {
-        // Checkbox was just checked
-        // Use data that is from the Second generation Pokemon.
-        const filtered_data = thirdGenerationData;
+// addInteractivity('first-filter', firstGenerationData, heightButton.value); // first generation data height
+// addInteractivity('second-filter', secondGenerationData, heightButton.value); // second generation data height
+// addInteractivity('third-filter', thirdGenerationData, heightButton.value); // third generation data height
 
-        update(filtered_data); // Update the chart with the filtered data
-    } else {
-        // Checkbox was just unchecked
-        update(firstGenerationData); // Update the chart with all the data we have
-    }
-});
+// d3.select('#first-filter').on('change', function () {
+//     // This will be triggered when the user selects or unselects the checkbox
+//     const checked = d3.select(this).property('checked');
+//     if (checked === true) {
+//         // Checkbox was just checked
+//         // Use data that is from the Second generation Pokemon.
+//         const filtered_data = firstGenerationData;
+
+//         update(filtered_data); // Update the chart with the filtered data
+//     } else {
+//         // Checkbox was just unchecked
+//         update(firstGenerationData, 'height'); // Update the chart with all the data we have
+//     }
+// });
+
+// d3.select('#second-filter').on('change', function () {
+//     // This will be triggered when the user selects or unselects the checkbox
+//     const checked = d3.select(this).property('checked');
+//     if (checked === true) {
+//         // Checkbox was just checked
+//         // Use data that is from the Second generation Pokemon.
+//         const filtered_data = secondGenerationData;
+
+//         update(filtered_data); // Update the chart with the filtered data
+//     } else {
+//         // Checkbox was just unchecked
+//         update(firstGenerationData, 'height'); // Update the chart with all the data we have
+//     }
+// });
+
+// d3.select('#third-filter').on('change', function () {
+//     // This will be triggered when the user selects or unselects the checkbox
+//     const checked = d3.select(this).property('checked');
+//     if (checked === true) {
+//         // Checkbox was just checked
+//         // Use data that is from the Second generation Pokemon.
+//         const filtered_data = thirdGenerationData;
+
+//         update(filtered_data); // Update the chart with the filtered data
+//     } else {
+//         // Checkbox was just unchecked
+//         update(firstGenerationData, 'height'); // Update the chart with all the data we have
+//     }
+// });
