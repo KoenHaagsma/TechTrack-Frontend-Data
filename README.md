@@ -1,7 +1,6 @@
-# ⚙ Project name
+# ⚙ TechTrack-Frontend-Data
 
-*Insert picture/gif of full project UI*
-
+![Project image](./img/Pokemon_D3.png)
 
 ## 📂 Assignment
 
