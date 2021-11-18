@@ -43,6 +43,7 @@ const g_yaxis = g.append('g').attr('class', 'y axis'); // Append the group to th
 firstGenerationData = await characterDetails(firstGenerationPokeURL);
 secondGenerationData = await characterDetails(secondGenerationPokeURL);
 thirdGenerationData = await characterDetails(thirdGenerationPokeURL);
+
 update(firstGenerationData, 'height');
 
 function update(new_data, element) {
