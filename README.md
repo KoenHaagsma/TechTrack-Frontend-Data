@@ -1,8 +1,11 @@
 # ⚙ Project name
 
 *Insert picture/gif of full project UI*
+
+
 ## 📂 Assignment
-*Assignment explanation*
+
+The assignment of Front-end Data is to apply the library [D3.js](https://d3js.org/) to the data that was prepared in [functional programming](https://github.com/KoenHaagsma/TechTrack-Frontend-Applications), we had to use enter(), update() & exit() to apply that data and update it.
 
 ## 🧾 Table of contents
 -   [About the project](##About-the-project)
@@ -10,8 +13,9 @@
 -   [Getting started](##Getting-started)
       * [Installation](##Installation)
 -   [Packages/Dependecies](##Packages/dependecies)
-      * [Dependecies](##Dependecies)
-      * [Dev dependecies](##Dev-dependecies)
+      * [Dependecies](###Dependecies)
+      * [Dev dependecies](###Dev-dependecies)
+-   [Wishlist](##Wishlist)
 -   [License](##License)
 
 ## 📖 About the project
@@ -50,6 +54,8 @@ npm run dev
 - [Package name]()
 ### 🧱 Dev dependecies
 - [Package name]()
+
+## 🌟 Wishlist
 
 ## 📑 Sources
 - [Bronnen]()
